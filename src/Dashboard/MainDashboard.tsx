@@ -3,6 +3,19 @@ import { jsx, css } from "@emotion/react";
 import { FC } from "react";
 import { Carousel, Button, ButtonGroup } from "react-bootstrap";
 
+const wrapperStyles = css`
+
+position: absolute;
+top: 20%;
+margin-top: -50px;
+width: 100%;
+height: 100%;
+​`;
+
+const headerStyles = css`
+  font-family: Spooky;
+`;
+
 const buttongGroupStyles = css`
   display: flex;
   justify-content: space-evenly;
@@ -12,7 +25,9 @@ const buttongGroupStyles = css`
 const buttonStyles = css`
   margin: 1rem;
   background-color: #ff8c00;
+  color: black;
   border: 1px solid black;
+  font-family: Spooky;
 
   &.btn-primary {
     &:active {
@@ -46,9 +61,11 @@ export const MainDashboard: FC = () => {
   };
 
   return (
-    <div>
+    <div css={wrapperStyles}>
+      <h1 css={headerStyles}>Spooky Slam</h1>
+
       <div>
-        <Carousel indicators={false}>
+        <Carousel indicators={false} controls={false}>
           <Carousel.Item>
             <img
               className="spooky-slam-header"
