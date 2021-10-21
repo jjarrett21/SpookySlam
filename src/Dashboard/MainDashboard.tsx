@@ -60,10 +60,20 @@ export const MainDashboard: FC = () => {
       </div>
       <div css={buttongGroupStyles}>
         <ButtonGroup vertical>
-          <Button size="lg" color="#FFA500" css={buttonStyles}>
+          <Button
+            size="lg"
+            color="#FFA500"
+            css={buttonStyles}
+            onClick={handleSelectVoting}
+          >
             Vote
           </Button>
-          <Button size="lg" color="FFA500" css={buttonStyles}>
+          <Button
+            size="lg"
+            color="FFA500"
+            css={buttonStyles}
+            onClick={handleSelectUpload}
+          >
             Upload Photos
           </Button>
         </ButtonGroup>
