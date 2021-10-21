@@ -27,7 +27,7 @@ const buttonStyles = css`
   margin: 1rem;
   background-color: #ff8c00;
   color: black;
-  border: 1px solid black;
+  border: 3px solid black;
   font-family: Spooky;
 
   &.btn-primary {
