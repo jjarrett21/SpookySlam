@@ -1,7 +1,8 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/react";
-import { FC } from "react";
+import { FC, SyntheticEvent, useState } from "react";
 import { Carousel, Button, ButtonGroup } from "react-bootstrap";
+import { storage } from "../firebase/fireabse";
 
 const wrapperStyles = css`
 
@@ -52,6 +53,9 @@ const buttonStyles = css`
 `;
 
 export const MainDashboard: FC = () => {
+  const [file, setFile] = useState<File>(null);
+  const [url, setUrl] = useState("");
+
   const handleSelectVoting = () => {
     console.log("vote");
   };
