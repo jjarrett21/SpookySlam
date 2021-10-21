@@ -53,7 +53,7 @@ const buttonStyles = css`
 `;
 
 export const MainDashboard: FC = () => {
-  const [file, setFile] = useState<File>(null);
+  const [file, setFile] = useState<File>();
   const [url, setUrl] = useState("");
 
   const handleSelectVoting = () => {
