@@ -55,7 +55,9 @@ const buttonStyles = css`
 
 export const MainDashboard: FC = () => {
   const [file, setFile] = useState<File>();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [url, setUrl] = useState("");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [progress, setProgress] = useState(0);
 
   const handleSelectVoting = () => {
