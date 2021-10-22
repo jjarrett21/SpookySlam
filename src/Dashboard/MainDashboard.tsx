@@ -2,7 +2,6 @@
 import { jsx, css } from "@emotion/react";
 import { FC, SyntheticEvent, useState } from "react";
 import { Carousel, Button, ButtonGroup } from "react-bootstrap";
-import { storage } from "../firebase/fireabse";
 
 const wrapperStyles = css`
 
