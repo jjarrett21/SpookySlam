@@ -3,7 +3,7 @@ import { jsx, css } from "@emotion/react";
 import { FC, SyntheticEvent, useState } from "react";
 import { Carousel, Button, ButtonGroup } from "react-bootstrap";
 import { storage } from "../firebase/fireabse";
-import { ref, uploadBytes } from "firebase/storage";
+import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 
 const wrapperStyles = css`
 
@@ -62,10 +62,6 @@ export const MainDashboard: FC = () => {
     console.log("vote");
   };
 
-  const handleSelectUpload = () => {
-    console.log("upload");
-  };
-
   const handleChange = (event: SyntheticEvent) => {
     const input = event.target as HTMLInputElement;
 
@@ -84,14 +80,29 @@ export const MainDashboard: FC = () => {
     }
 
     const storageRef = ref(storage, `/images/${maybeFile?.name}`);
-    uploadBytes(storageRef, maybeFile).then((snapshot) => {
-      console.log(snapshot);
-    });
+    const uploadTask = uploadBytesResumable(storageRef, file!);
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const nextProgress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setProgress(nextProgress);
+      },
+      (error) => {
+        console.error(error.message);
+      },
+      () => {
+        setFile(undefined);
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setUrl(downloadURL);
+        });
+      }
+    );
   };
 
   return (
     <div css={wrapperStyles}>
-      å<h1 css={headerStyles}>Spooky Slam</h1>
+      <h1 css={headerStyles}>Spooky Slam</h1>
       <div>
         <Carousel indicators={false} controls={false}>
           <Carousel.Item>
