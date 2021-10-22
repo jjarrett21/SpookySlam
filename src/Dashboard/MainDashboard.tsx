@@ -2,6 +2,8 @@
 import { jsx, css } from "@emotion/react";
 import { FC, SyntheticEvent, useState } from "react";
 import { Carousel, Button, ButtonGroup } from "react-bootstrap";
+import { storage } from "../firebase/fireabse";
+import { ref, uploadBytes } from "firebase/storage";
 
 const wrapperStyles = css`
 
@@ -38,7 +40,7 @@ const buttonStyles = css`
     &:hover {
       background-color: #ff8c00;
       opacity: 0.5;
-    }
+  
 
     &:active {
       background-color: #ff8c00;
@@ -54,6 +56,7 @@ const buttonStyles = css`
 export const MainDashboard: FC = () => {
   const [file, setFile] = useState<File>();
   const [url, setUrl] = useState("");
+  const [progress, setProgress] = useState(0);
 
   const handleSelectVoting = () => {
     console.log("vote");
@@ -63,10 +66,32 @@ export const MainDashboard: FC = () => {
     console.log("upload");
   };
 
+  const handleChange = (event: SyntheticEvent) => {
+    const input = event.target as HTMLInputElement;
+
+    if (!input.files?.length) {
+      return;
+    }
+
+    setFile(input.files[0]);
+  };
+
+  const handleUpload = () => {
+    let maybeFile = file;
+
+    if (!maybeFile) {
+      return;
+    }
+
+    const storageRef = ref(storage, `/images/${maybeFile?.name}`);
+    uploadBytes(storageRef, maybeFile).then((snapshot) => {
+      console.log(snapshot);
+    });
+  };
+
   return (
     <div css={wrapperStyles}>
-      <h1 css={headerStyles}>Spooky Slam</h1>
-
+      å<h1 css={headerStyles}>Spooky Slam</h1>
       <div>
         <Carousel indicators={false} controls={false}>
           <Carousel.Item>
@@ -88,14 +113,20 @@ export const MainDashboard: FC = () => {
           >
             Vote
           </Button>
-          <Button
-            size="lg"
-            color="FFA500"
-            css={buttonStyles}
-            onClick={handleSelectUpload}
-          >
-            Upload Photos
-          </Button>
+          <ButtonGroup>
+            <Button size="lg" color="#FFA500" css={buttonStyles}>
+              <input type="file" onChange={handleChange} />
+            </Button>
+
+            <Button
+              size="lg"
+              color="#FFA500"
+              css={buttonStyles}
+              onClick={handleUpload}
+            >
+              Upload Photos
+            </Button>
+          </ButtonGroup>
         </ButtonGroup>
       </div>
     </div>
