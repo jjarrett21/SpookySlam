@@ -4,6 +4,7 @@ import { ChangeEvent, FC, SyntheticEvent, useState } from "react";
 import { Carousel, Button, ButtonGroup, FormLabel } from "react-bootstrap";
 import { storage } from "../firebase/fireabse";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import { Link } from "react-router-dom";
 
 const wrapperStyles = css`
 
@@ -134,6 +135,8 @@ export const MainDashboard: FC = () => {
             size="lg"
             color="#FFA500"
             css={buttonStyles}
+            as={Link as any}
+            to={"/voting"}
             onClick={handleSelectVoting}
           >
             Vote
