@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/react";
-import { FC, SyntheticEvent, useState } from "react";
-import { Carousel, Button, ButtonGroup } from "react-bootstrap";
+import { ChangeEvent, FC, SyntheticEvent, useState } from "react";
+import { Carousel, Button, ButtonGroup, FormLabel } from "react-bootstrap";
 import { storage } from "../firebase/fireabse";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 
@@ -53,12 +53,20 @@ const buttonStyles = css`
   }
 `;
 
+const inputWrapperStyles = css`
+  display: flex;
+  justify-content: center;
+  font-family: Spooky;
+`;
+
 export const MainDashboard: FC = () => {
   const [file, setFile] = useState<File>();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [url, setUrl] = useState("");
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [progress, setProgress] = useState(0);
+
+  const [fileName, setFileName] = useState("");
 
   const handleSelectVoting = () => {
     console.log("vote");
@@ -74,6 +82,10 @@ export const MainDashboard: FC = () => {
     setFile(input.files[0]);
   };
 
+  const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setFileName(event.currentTarget.value);
+  };
+
   const handleUpload = () => {
     let maybeFile = file;
 
@@ -81,7 +93,7 @@ export const MainDashboard: FC = () => {
       return;
     }
 
-    const storageRef = ref(storage, `/images/${maybeFile?.name}`);
+    const storageRef = ref(storage, `/images/${fileName}`);
     const uploadTask = uploadBytesResumable(storageRef, file!);
     uploadTask.on(
       "state_changed",
@@ -141,6 +153,10 @@ export const MainDashboard: FC = () => {
             </Button>
           </ButtonGroup>
         </ButtonGroup>
+      </div>
+      <div css={inputWrapperStyles}>
+        <FormLabel css={inputWrapperStyles}>Contestant Name: </FormLabel>
+        <input type="text" onChange={handleNameChange} />
       </div>
     </div>
   );
