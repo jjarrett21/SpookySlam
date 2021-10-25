@@ -2,8 +2,9 @@
 import { jsx, css } from "@emotion/react";
 import { ChangeEvent, FC, SyntheticEvent, useState } from "react";
 import { Carousel, Button, ButtonGroup, FormLabel } from "react-bootstrap";
-import { storage } from "../firebase/fireabse";
+import { storage, db } from "../firebase/fireabse";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import { collection, addDoc } from "firebase/firestore";
 import { Link } from "react-router-dom";
 
 const wrapperStyles = css`
@@ -62,16 +63,11 @@ const inputWrapperStyles = css`
 
 export const MainDashboard: FC = () => {
   const [file, setFile] = useState<File>();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [url, setUrl] = useState("");
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [progress, setProgress] = useState(0);
 
   const [fileName, setFileName] = useState("");
-
-  const handleSelectVoting = () => {
-    console.log("vote");
-  };
 
   const handleChange = (event: SyntheticEvent) => {
     const input = event.target as HTMLInputElement;
@@ -85,6 +81,19 @@ export const MainDashboard: FC = () => {
 
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setFileName(event.currentTarget.value);
+  };
+
+  const handleFirestoreUpload = async () => {
+    try {
+      const docRef = await addDoc(collection(db, "contestants"), {
+        name: fileName,
+        votes: 0,
+        url: url,
+      });
+      console.log(docRef.id);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const handleUpload = () => {
@@ -106,11 +115,12 @@ export const MainDashboard: FC = () => {
       (error) => {
         console.error(error.message);
       },
-      () => {
-        setFile(undefined);
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+      async () => {
+        await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setUrl(downloadURL);
         });
+
+        await handleFirestoreUpload();
       }
     );
   };
@@ -137,7 +147,6 @@ export const MainDashboard: FC = () => {
             css={buttonStyles}
             as={Link as any}
             to={"/voting"}
-            onClick={handleSelectVoting}
           >
             Vote
           </Button>
