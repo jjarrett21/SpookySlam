@@ -77,26 +77,7 @@ export const MainDashboard: FC = () => {
     }
 
     setFile(input.files[0]);
-  };
 
-  const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setFileName(event.currentTarget.value);
-  };
-
-  const handleFirestoreUpload = async () => {
-    try {
-      const docRef = await addDoc(collection(db, "contestants"), {
-        name: fileName,
-        votes: 0,
-        url: url,
-      });
-      console.log(docRef.id);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const handleUpload = () => {
     let maybeFile = file;
 
     if (!maybeFile) {
@@ -119,10 +100,29 @@ export const MainDashboard: FC = () => {
         await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setUrl(downloadURL);
         });
-
-        await handleFirestoreUpload();
       }
     );
+  };
+
+  const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setFileName(event.currentTarget.value);
+  };
+
+  const handleFirestoreUpload = async () => {
+    try {
+      const docRef = await addDoc(collection(db, "contestants"), {
+        name: fileName,
+        votes: 0,
+        url: url,
+      });
+      console.log(docRef.id);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleUpload = async () => {
+    await handleFirestoreUpload();
   };
 
   return (
