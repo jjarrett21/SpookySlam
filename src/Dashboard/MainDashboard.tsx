@@ -161,3 +161,5 @@ export const MainDashboard: FC = () => {
     </div>
   );
 };
+
+MainDashboard.displayName = "MainDashboard";
