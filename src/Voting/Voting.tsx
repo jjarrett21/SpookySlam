@@ -112,6 +112,7 @@ export const Voting: FC = () => {
   const [selectedContestant, setSelectedContestant] = useState("");
   const [selectedContestantId, setSelectedContestantId] = useState(null);
   const [open, setOpen] = useState(false);
+
   const docData: DocumentData[] = [];
   const docIds: string[] = [];
   const votingRef = doc(db, "contestants", `${selectedContestantId}`);
@@ -140,9 +141,7 @@ export const Voting: FC = () => {
 
   const handleVoteSubmit = async () => {
     setOpen(false);
-    setHasVoted(true);
-
-    console.log(selectedContestant);
+    setHasVoted(!hasVoted);
 
     await updateDoc(votingRef, {
       votes: increment(1),
