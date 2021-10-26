@@ -12,7 +12,7 @@ export const globalStyle = css`
   }
 
   html {
-    overflow: hidden;
+    overflow: auto;
   }
 
   body {
