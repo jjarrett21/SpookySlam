@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/react";
-import { ChangeEvent, FC, SyntheticEvent, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { db } from "../firebase/fireabse";
 import {
   collection,
@@ -15,34 +15,22 @@ import { Contestant } from "./types";
 import { Card } from "react-bootstrap";
 
 export const Voting: FC = () => {
-  const [contestants, setContestants] = useState<DocumentData[]>();
-  const getData = async () => {
+  const [contestants, setContestants] = useState<DocumentData[]>([]);
+  const docData: DocumentData[] = [];
+
+  const fetchData = async () => {
     const q = query(collection(db, "contestants"));
 
     const querySnapshot = await getDocs(q);
-
-    // const unsub = onSnapshot(q, (querySnapshot) => {
-    //   const data: DocumentData[] = [];
-    //   querySnapshot.forEach((doc) => {
-    //     data.push(doc.data());
-    //   });
-
-    //   setContestants(data);
-    //   console.log(contestants);
-    // });
-    // unsub();
     querySnapshot.forEach((doc) => {
-      const docData: DocumentData[] = [];
       docData.push(doc.data());
-      setContestants(docData);
     });
+    setContestants(docData);
   };
 
   useEffect(() => {
-    getData();
+    fetchData();
   }, []);
-
-  console.log(contestants);
 
   return (
     <div>

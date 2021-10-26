@@ -9,7 +9,6 @@ import { Link } from "react-router-dom";
 import { defaultFontStyle } from "../tokens/functions";
 
 const wrapperStyles = css`
-
 position: absolute;
 top: 20%;
 margin-top: -50px;
@@ -66,7 +65,7 @@ export const MainDashboard: FC = () => {
 
   const [fileName, setFileName] = useState("");
 
-  const handleSelectFile = (event: SyntheticEvent) => {
+  const handleAddFile = (event: SyntheticEvent) => {
     const input = event.target as HTMLInputElement;
 
     if (!input.files?.length) {
@@ -155,7 +154,7 @@ export const MainDashboard: FC = () => {
           </Button>
           <ButtonGroup>
             <Button size="lg" color="#FFA500" css={buttonStyles}>
-              <input type="file" onChange={handleSelectFile} />
+              <input type="file" onChange={handleAddFile} />
             </Button>
 
             <Button
