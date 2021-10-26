@@ -8,6 +8,9 @@ import {
   getDocs,
   DocumentData,
   orderBy,
+  updateDoc,
+  increment,
+  doc,
 } from "firebase/firestore";
 import { defaultFontStyle } from "../tokens/functions";
 import { ButtonGroup, Card, Modal, Button } from "react-bootstrap";
@@ -107,28 +110,43 @@ export const Voting: FC = () => {
     lsGet("user_voted") === "false"
   );
   const [selectedContestant, setSelectedContestant] = useState("");
+  const [selectedContestantId, setSelectedContestantId] = useState(null);
   const [open, setOpen] = useState(false);
   const docData: DocumentData[] = [];
+  const docIds: string[] = [];
+  const votingRef = doc(db, "contestants", `${selectedContestantId}`);
 
   const fetchData = async () => {
     const q = query(collection(db, "contestants"), orderBy("name"));
 
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
+      docIds.push(doc.id);
       docData.push(doc.data());
+      docData.forEach((item, i) => {
+        item.id = docIds[i];
+      });
     });
+
     setContestants(docData);
   };
 
   const handleSelectedContestant =
-    (nextName: string) => (e: SyntheticEvent) => {
-      setSelectedContestant(nextName);
+    (nextContestant: DocumentData) => (e: SyntheticEvent) => {
+      setSelectedContestant(nextContestant.name);
+      setSelectedContestantId(nextContestant.id);
       setOpen(true);
     };
 
-  const handleVoteSubmit = () => {
+  const handleVoteSubmit = async () => {
     setOpen(false);
     setHasVoted(true);
+
+    console.log(selectedContestant);
+
+    await updateDoc(votingRef, {
+      votes: increment(1),
+    });
   };
 
   useEffect(() => {
@@ -143,10 +161,16 @@ export const Voting: FC = () => {
   return (
     <div>
       <h1 css={defaultFontStyle}>Vote for your favorite</h1>
-      {/* <h4 css={defaultFontStyle}>**Only vote once please**</h4> */}
+      <h4 css={defaultFontStyle}>
+        {hasVoted && "Thanks For Voting; We'll have results soon"}
+      </h4>
       <div css={wrapperStyles}>
         {contestants?.map((c) => (
-          <Card css={baseCardStyles} onClick={handleSelectedContestant(c.name)}>
+          <Card
+            css={baseCardStyles}
+            onClick={handleSelectedContestant(c)}
+            key={c.id}
+          >
             <div key={`${uuidv4()}`}>
               <Card.Text css={cardTextStyles}>Name: {c.name}</Card.Text>
               <Card.Text>Votes: {c.votes}</Card.Text>
