@@ -129,6 +129,7 @@ export const MainDashboard: FC = () => {
       return;
     }
     handleFirestoreUpload();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url]);
 
   const handleUpload = async () => {
