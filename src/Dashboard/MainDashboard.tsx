@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/react";
-import { ChangeEvent, FC, SyntheticEvent, useState } from "react";
+import { ChangeEvent, FC, SyntheticEvent, useEffect, useState } from "react";
 import { Carousel, Button, ButtonGroup, FormLabel } from "react-bootstrap";
 import { storage, db } from "../firebase/fireabse";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
@@ -63,7 +63,9 @@ export const MainDashboard: FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [progress, setProgress] = useState(0);
 
-  const [fileName, setFileName] = useState("");
+  const [contestantName, setContestantName] = useState("");
+
+  let tempUrl = "";
 
   const handleAddFile = (event: SyntheticEvent) => {
     const input = event.target as HTMLInputElement;
@@ -76,13 +78,13 @@ export const MainDashboard: FC = () => {
   };
 
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setFileName(event.currentTarget.value);
+    setContestantName(event.currentTarget.value);
   };
 
   const handleFirestoreUpload = async () => {
     try {
       const docRef = await addDoc(collection(db, "contestants"), {
-        name: fileName,
+        name: contestantName,
         votes: 0,
         url: url,
       });
@@ -92,14 +94,14 @@ export const MainDashboard: FC = () => {
     }
   };
 
-  const handleFileUpload = () => {
+  const handleFileUpload = async () => {
     let maybeFile = file;
 
     if (!maybeFile) {
       return;
     }
 
-    const storageRef = ref(storage, `/images/${fileName}`);
+    const storageRef = ref(storage, `/images/${contestantName}`);
     const uploadTask = uploadBytesResumable(storageRef, file!);
     uploadTask.on(
       "state_changed",
@@ -113,18 +115,24 @@ export const MainDashboard: FC = () => {
       },
       async () => {
         await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          setUrl(downloadURL);
-          console.log(downloadURL);
+          tempUrl = downloadURL;
         });
-        setFileName("");
+        setUrl(tempUrl);
+        setContestantName("");
         setFile(undefined);
       }
     );
   };
 
+  useEffect(() => {
+    if (url === "" || contestantName === "") {
+      return;
+    }
+    handleFirestoreUpload();
+  }, [url]);
+
   const handleUpload = async () => {
     await handleFileUpload();
-    await handleFirestoreUpload();
   };
 
   return (
@@ -170,7 +178,7 @@ export const MainDashboard: FC = () => {
       </div>
       <div css={inputWrapperStyles}>
         <FormLabel css={inputWrapperStyles}>Contestant Name: </FormLabel>
-        <input type="text" onChange={handleNameChange} value={fileName} />
+        <input type="text" onChange={handleNameChange} value={contestantName} />
       </div>
     </div>
   );
