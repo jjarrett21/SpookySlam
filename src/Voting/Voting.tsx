@@ -64,19 +64,15 @@ export const Voting: FC = () => {
 
   return (
     <div>
-      <h1 css={defaultFontStyle}>VOTES GO HERE</h1>
+      <h1 css={defaultFontStyle}>Vote for your favorite</h1>
+      <h4 css={defaultFontStyle}>**Only vote once please**</h4>
       <div css={wrapperStyles}>
         <Card css={baseCardStyles}>
           {contestants?.map((c) => (
             <div key={`${uuidv4()}`}>
               <Card.Text>Name: {c.name}</Card.Text>
-              <Card.Img css={cardStyles(c.url)}>
-                {/* <div css={cardStyles(c.url)}>
-                  <div css={innerCardStyles} />
-                </div> */}
-              </Card.Img>
-
               <Card.Text>Votes: {c.votes}</Card.Text>
+              <Card.Img css={cardStyles(c.url)} />
             </div>
           ))}
         </Card>
