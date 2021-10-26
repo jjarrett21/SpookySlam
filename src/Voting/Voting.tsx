@@ -2,7 +2,13 @@
 import { jsx, css } from "@emotion/react";
 import { FC, SyntheticEvent, useEffect, useState } from "react";
 import { db } from "../firebase/fireabse";
-import { collection, query, getDocs, DocumentData } from "firebase/firestore";
+import {
+  collection,
+  query,
+  getDocs,
+  DocumentData,
+  orderBy,
+} from "firebase/firestore";
 import { defaultFontStyle } from "../tokens/functions";
 import { ButtonGroup, Card, Modal, Button } from "react-bootstrap";
 import { v4 as uuidv4 } from "uuid";
@@ -105,7 +111,7 @@ export const Voting: FC = () => {
   const docData: DocumentData[] = [];
 
   const fetchData = async () => {
-    const q = query(collection(db, "contestants"));
+    const q = query(collection(db, "contestants"), orderBy("name"));
 
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
