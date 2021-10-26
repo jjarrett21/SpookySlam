@@ -69,7 +69,7 @@ export const MainDashboard: FC = () => {
 
   const [fileName, setFileName] = useState("");
 
-  const handleChange = (event: SyntheticEvent) => {
+  const handleSelectFile = (event: SyntheticEvent) => {
     const input = event.target as HTMLInputElement;
 
     if (!input.files?.length) {
@@ -77,7 +77,26 @@ export const MainDashboard: FC = () => {
     }
 
     setFile(input.files[0]);
+  };
 
+  const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setFileName(event.currentTarget.value);
+  };
+
+  const handleFirestoreUpload = async () => {
+    try {
+      const docRef = await addDoc(collection(db, "contestants"), {
+        name: fileName,
+        votes: 0,
+        url: url,
+      });
+      console.log(docRef.id);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleFileUpload = () => {
     let maybeFile = file;
 
     if (!maybeFile) {
@@ -99,29 +118,16 @@ export const MainDashboard: FC = () => {
       async () => {
         await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setUrl(downloadURL);
+          console.log(downloadURL);
         });
+        setFileName("");
+        setFile(undefined);
       }
     );
   };
 
-  const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setFileName(event.currentTarget.value);
-  };
-
-  const handleFirestoreUpload = async () => {
-    try {
-      const docRef = await addDoc(collection(db, "contestants"), {
-        name: fileName,
-        votes: 0,
-        url: url,
-      });
-      console.log(docRef.id);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   const handleUpload = async () => {
+    await handleFileUpload();
     await handleFirestoreUpload();
   };
 
@@ -152,7 +158,7 @@ export const MainDashboard: FC = () => {
           </Button>
           <ButtonGroup>
             <Button size="lg" color="#FFA500" css={buttonStyles}>
-              <input type="file" onChange={handleChange} />
+              <input type="file" onChange={handleSelectFile} />
             </Button>
 
             <Button
@@ -168,7 +174,7 @@ export const MainDashboard: FC = () => {
       </div>
       <div css={inputWrapperStyles}>
         <FormLabel css={inputWrapperStyles}>Contestant Name: </FormLabel>
-        <input type="text" onChange={handleNameChange} />
+        <input type="text" onChange={handleNameChange} value={fileName} />
       </div>
     </div>
   );
