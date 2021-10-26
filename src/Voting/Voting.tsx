@@ -11,8 +11,8 @@ const cardStyles = (url: string) => css`
   background-color: #ffffff;
   position: relative;
   cursor: pointer;
-  height: 110px;
-  width: 165px;
+  height: 500px;
+  width: 400px;
   border-radius: 3px;
   border: 2px solid black;
 
@@ -20,20 +20,14 @@ const cardStyles = (url: string) => css`
 
   background-image: url(${url});
   background-position: center center;
-  background-size: auto 100%;
-  background-color: $FFFF00;
+  background-size: 100%;
+  background-color: transparent;
   background-repeat: no-repeat;
   box-shadow: -4px 0px 6px rgba(0, 0, 0, 0.3);
 
   &:hover {
-    background-color: $FFFF00;
+    background-color: #ffc800;
   }
-`;
-
-const innerCardStyles = css`
-  height: 100%;
-  width: 100%;
-  position: relative;
 `;
 
 const wrapperStyles = css`
@@ -43,6 +37,11 @@ margin-top: -50px;
 width: 100%;
 height: 100%;
 ​`;
+
+const baseCardStyles = css`
+  background-color: transparent;
+  font-family: Spooky;
+`;
 
 export const Voting: FC = () => {
   const [contestants, setContestants] = useState<DocumentData[]>([]);
@@ -60,13 +59,14 @@ export const Voting: FC = () => {
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <div>
       <h1 css={defaultFontStyle}>VOTES GO HERE</h1>
       <div css={wrapperStyles}>
-        <Card>
+        <Card css={baseCardStyles}>
           {contestants?.map((c) => (
             <div key={`${uuidv4()}`}>
               <Card.Text>Name: {c.name}</Card.Text>
