@@ -6,6 +6,7 @@ import { storage, db } from "../firebase/fireabse";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { collection, addDoc } from "firebase/firestore";
 import { Link } from "react-router-dom";
+import { defaultFontStyle } from "../tokens/functions";
 
 const wrapperStyles = css`
 
@@ -15,10 +16,6 @@ margin-top: -50px;
 width: 100%;
 height: 100%;
 ​`;
-
-const headerStyles = css`
-  font-family: Spooky;
-`;
 
 const buttongGroupStyles = css`
   display: flex;
@@ -133,7 +130,7 @@ export const MainDashboard: FC = () => {
 
   return (
     <div css={wrapperStyles}>
-      <h1 css={headerStyles}>Spooky Slam</h1>
+      <h1 css={defaultFontStyle}>Spooky Slam</h1>
       <div>
         <Carousel indicators={false} controls={false}>
           <Carousel.Item>
