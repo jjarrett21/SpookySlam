@@ -4,7 +4,7 @@ import { FC } from "react";
 import "./App.css";
 import { MainDashboard } from "./Dashboard";
 import { Voting } from "./Voting";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { HashRouter as Router, Route } from "react-router-dom";
 import { globalStyle } from "./global";
 
 export const App: FC = () => {

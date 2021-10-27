@@ -12,8 +12,8 @@ const wrapperStyles = css`
 position: absolute;
 top: 20%;
 margin-top: -50px;
-width: 100%;
-height: 100%;
+width: 100vw;
+height: 100vh;
 ​`;
 
 const buttongGroupStyles = css`
