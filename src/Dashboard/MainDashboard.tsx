@@ -103,7 +103,7 @@ export const MainDashboard: FC = () => {
     }
   };
 
-  const handleFileUpload = async () => {
+  const handleConvertFile = async () => {
     let maybeFile = file;
 
     if (!maybeFile) {
@@ -127,14 +127,22 @@ export const MainDashboard: FC = () => {
 
       let fileName = resultFile.name.replace(".HEIC", ".jpeg");
 
-      resultFile = new File([conversionResult as BlobPart], fileName, {
+      return (resultFile = new File([conversionResult as BlobPart], fileName, {
         type: "image/jpeg",
         lastModified: Date.now(),
-      });
+      }));
+    }
+  };
+
+  const handleFileUpload = async () => {
+    const convertedFile = await handleConvertFile();
+
+    if (!convertedFile) {
+      return;
     }
 
     const storageRef = ref(storage, `/images/${contestantName}`);
-    const uploadTask = uploadBytesResumable(storageRef, resultFile);
+    const uploadTask = uploadBytesResumable(storageRef, convertedFile);
     uploadTask.on(
       "state_changed",
       (snapshot) => {
