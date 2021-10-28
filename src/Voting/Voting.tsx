@@ -14,7 +14,6 @@ import {
 } from "firebase/firestore";
 import { defaultFontStyle } from "../tokens/functions";
 import { ButtonGroup, Card, Modal, Button } from "react-bootstrap";
-import { v4 as uuidv4 } from "uuid";
 import { get as lsGet, set as lsSet } from "local-storage";
 
 const cardStyles = (url: string) => css`
@@ -176,7 +175,7 @@ export const Voting: FC = () => {
             onClick={handleSelectedContestant(c)}
             key={c.id}
           >
-            <div key={`${uuidv4()}`}>
+            <div key={c.id}>
               <Card.Text css={cardTextStyles}>Name: {c.name}</Card.Text>
               <Card.Text>Votes: {c.votes}</Card.Text>
               <Card.Img css={cardStyles(c.url)} />
