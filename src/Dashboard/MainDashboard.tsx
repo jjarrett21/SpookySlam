@@ -7,6 +7,7 @@ import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { collection, addDoc } from "firebase/firestore";
 import { Link } from "react-router-dom";
 import { defaultFontStyle } from "../tokens/functions";
+import heic2any from "heic2any";
 
 const wrapperStyles = css`
 position: absolute;
@@ -58,7 +59,7 @@ const inputWrapperStyles = css`
 `;
 
 export const MainDashboard: FC = () => {
-  const [file, setFile] = useState<File>();
+  const [file, setFile] = useState<File | Blob>();
   const [url, setUrl] = useState("");
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [progress, setProgress] = useState(0);
@@ -67,14 +68,36 @@ export const MainDashboard: FC = () => {
 
   let tempUrl = "";
 
-  const handleAddFile = (event: SyntheticEvent) => {
+  const handleAddFile = async (event: SyntheticEvent) => {
     const input = event.target as HTMLInputElement;
 
     if (!input.files?.length) {
       return;
     }
 
-    setFile(input.files[0]);
+    console.log(input.files);
+    const uploadedFile = input.files[0];
+
+    // some hacky blob to url, to file logic
+    // https://stackoverflow.com/a/68222529
+
+    let blobURL = URL.createObjectURL(uploadedFile);
+    let blobRes = await fetch(blobURL);
+    let blob = await blobRes.blob();
+
+    let convertToPNG = await heic2any({
+      blob,
+      toType: "image/jpeg",
+      quality: 1,
+    });
+
+    const convertedFileName = uploadedFile.name.replace(".heic", ".jpeg");
+
+    const convertToBlob = new Blob([convertToPNG as BlobPart]);
+
+    const fileToupload = new File([convertToBlob], convertedFileName);
+
+    setFile(fileToupload);
   };
 
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -129,6 +152,7 @@ export const MainDashboard: FC = () => {
       return;
     }
     handleFirestoreUpload();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url]);
 
