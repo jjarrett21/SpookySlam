@@ -7,6 +7,7 @@ import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { collection, addDoc } from "firebase/firestore";
 import { Link } from "react-router-dom";
 import { defaultFontStyle } from "../tokens/functions";
+import heic2any from "heic2any";
 
 const wrapperStyles = css`
 position: absolute;
@@ -101,8 +102,28 @@ export const MainDashboard: FC = () => {
       return;
     }
 
+    var resultFile = file!
+
+    if (maybeFile.name.toLowerCase().endsWith(".heic")) {
+      let fileUrl = URL.createObjectURL(maybeFile);
+
+      let blobRes = await fetch(fileUrl);
+
+      let blob = await blobRes.blob();
+
+      let conversionResult = await heic2any({
+        blob,
+        toType: "image/jpeg",
+        quality: 0.75
+      });
+
+      let fileName = resultFile.name.replace(".HEIC", ".jpeg");
+
+      resultFile = new File([conversionResult as BlobPart], fileName, {type: "image/jpeg", lastModified: Date.now()});
+    }
+
     const storageRef = ref(storage, `/images/${contestantName}`);
-    const uploadTask = uploadBytesResumable(storageRef, file!);
+    const uploadTask = uploadBytesResumable(storageRef, resultFile);
     uploadTask.on(
       "state_changed",
       (snapshot) => {
