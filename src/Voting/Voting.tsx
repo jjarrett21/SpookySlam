@@ -14,6 +14,7 @@ import {
 } from "firebase/firestore";
 import { defaultFontStyle } from "../tokens/functions";
 import { ButtonGroup, Card, Modal, Button } from "react-bootstrap";
+import { v4 as uuidv4 } from "uuid";
 import { get as lsGet, set as lsSet } from "local-storage";
 
 const cardStyles = (url: string) => css`
@@ -21,7 +22,7 @@ const cardStyles = (url: string) => css`
   position: relative;
   cursor: pointer;
   height: 500px;
-  width: 400px;
+  width: 20rem;
   border-radius: 3px;
   border: 2px solid black;
 
@@ -40,17 +41,20 @@ const cardStyles = (url: string) => css`
 `;
 
 const wrapperStyles = css`
-position: absolute;
+position: relative;
 top: 20%;
-margin-top: -50px;
-width: 40%;
+width: 100%;
 height: 60%;
+align-items: center;
+margin-left: auto;
+margin-right: auto;
+margin-top: 60px;
 ​`;
 
 const baseCardStyles = css`
   background-color: transparent;
   font-family: Spooky;
-  left: 500px;
+  align-items:center;
 `;
 
 const cardTextStyles = css`
@@ -105,7 +109,9 @@ const modalStyle = css`
 
 export const Voting: FC = () => {
   const [contestants, setContestants] = useState<DocumentData[]>([]);
-  const [hasVoted, setHasVoted] = useState<boolean>(false);
+  const [hasVoted, setHasVoted] = useState<boolean>(
+    lsGet("user_voted") === "false"
+  );
   const [selectedContestant, setSelectedContestant] = useState("");
   const [selectedContestantId, setSelectedContestantId] = useState(null);
   const [open, setOpen] = useState(false);
@@ -151,21 +157,13 @@ export const Voting: FC = () => {
   }, []);
 
   useEffect(() => {
-    const voted = lsGet<boolean>("user_voted");
-    setHasVoted(voted);
-  }, []);
-
-  useEffect(() => {
-    if (!hasVoted) {
-      return;
-    }
     lsSet("user_voted", hasVoted.toString());
   }, [hasVoted]);
 
   return (
     <div>
-      <h1 css={defaultFontStyle}>Vote for your favorite</h1>
-      <h4 css={defaultFontStyle}>
+      <h1 className="vote-title"css={defaultFontStyle}>Vote for your favorite</h1>
+      <h4 className="vote-title"css={defaultFontStyle}>
         {hasVoted && "Thanks For Voting; We'll have results soon"}
       </h4>
       <div css={wrapperStyles}>
@@ -175,7 +173,7 @@ export const Voting: FC = () => {
             onClick={handleSelectedContestant(c)}
             key={c.id}
           >
-            <div key={c.id}>
+            <div key={`${uuidv4()}`}>
               <Card.Text css={cardTextStyles}>Name: {c.name}</Card.Text>
               <Card.Text>Votes: {c.votes}</Card.Text>
               <Card.Img css={cardStyles(c.url)} />
@@ -184,7 +182,7 @@ export const Voting: FC = () => {
         ))}
       </div>
 
-      <Modal css={modalStyle} show={open && hasVoted === false}>
+      <Modal css={modalStyle} show={open && lsGet("user_voted") === "false"}>
         <Modal.Header
           css={[defaultFontStyle, modalTxtStyles]}
           onHide={() => setOpen(false)}

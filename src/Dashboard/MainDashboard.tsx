@@ -1,13 +1,6 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/react";
-import {
-  ChangeEvent,
-  FC,
-  SyntheticEvent,
-  useEffect,
-  useState,
-  useRef,
-} from "react";
+import { ChangeEvent, FC, SyntheticEvent, useEffect, useState } from "react";
 import { Carousel, Button, ButtonGroup, FormLabel } from "react-bootstrap";
 import { storage, db } from "../firebase/fireabse";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
@@ -17,25 +10,38 @@ import { defaultFontStyle } from "../tokens/functions";
 import heic2any from "heic2any";
 
 const wrapperStyles = css`
-position: absolute;
-top: 20%;
-margin-top: -50px;
-width: 100vw;
-height: 100vh;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  margin-top: 50px;
+  width: 100%;
 ​`;
 
 const buttongGroupStyles = css`
-  display: flex;
-  justify-content: space-evenly;
-  padding: 1rem;
+  display:flex;
+  flex-direction: column;
+  padding-top: 1rem;
+  padding-left:3rem;
+  padding-right:3rem;
+  width: 100%;
+  max-width: 500px;
+  margin:auto;
 `;
 
 const buttonStyles = css`
-  margin: 1rem;
+  /*display: flex;*/
+  /*flex-direction: column;*/
+  margin: 5px;
   background-color: #ff8c00;
   color: black;
   border: 3px solid black;
   font-family: Spooky;
+  width: 100%;
+  justify-content: center;
+  padding:10px;
+  margin-top: 1rem;
+  margin-left: auto;
+  
 
   &.btn-primary {
     &:active {
@@ -63,12 +69,15 @@ const inputWrapperStyles = css`
   display: flex;
   justify-content: center;
   font-family: Spooky;
+  padding-top: 15px;
+  margin-bottom: 20px;
 `;
 
 export const MainDashboard: FC = () => {
   const [file, setFile] = useState<File>();
   const [url, setUrl] = useState("");
-  const fileRef = useRef<HTMLInputElement>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [progress, setProgress] = useState(0);
 
   const [contestantName, setContestantName] = useState("");
 
@@ -101,14 +110,14 @@ export const MainDashboard: FC = () => {
     }
   };
 
-  const handleConvertFile = async () => {
+  const handleFileUpload = async () => {
     let maybeFile = file;
 
     if (!maybeFile) {
       return;
     }
 
-    let resultFile = file!;
+    var resultFile = file!
 
     if (maybeFile.name.toLowerCase().endsWith(".heic")) {
       let fileUrl = URL.createObjectURL(maybeFile);
@@ -120,31 +129,22 @@ export const MainDashboard: FC = () => {
       let conversionResult = await heic2any({
         blob,
         toType: "image/jpeg",
-        quality: 0.75,
+        quality: 0.75
       });
 
       let fileName = resultFile.name.replace(".HEIC", ".jpeg");
 
-      return (resultFile = new File([conversionResult as BlobPart], fileName, {
-        type: "image/jpeg",
-        lastModified: Date.now(),
-      }));
-    }
-  };
-
-  const handleFileUpload = async () => {
-    const convertedFile = await handleConvertFile();
-
-    if (!convertedFile) {
-      return;
+      resultFile = new File([conversionResult as BlobPart], fileName, {type: "image/jpeg", lastModified: Date.now()});
     }
 
     const storageRef = ref(storage, `/images/${contestantName}`);
-    const uploadTask = uploadBytesResumable(storageRef, convertedFile);
+    const uploadTask = uploadBytesResumable(storageRef, resultFile);
     uploadTask.on(
       "state_changed",
       (snapshot) => {
-        console.info(snapshot);
+        const nextProgress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setProgress(nextProgress);
       },
       (error) => {
         console.error(error.message);
@@ -155,7 +155,7 @@ export const MainDashboard: FC = () => {
         });
         setUrl(tempUrl);
         setContestantName("");
-        fileRef.current!.value = "";
+        setFile(undefined);
       }
     );
   };
@@ -174,7 +174,7 @@ export const MainDashboard: FC = () => {
 
   return (
     <div css={wrapperStyles}>
-      <h1 css={defaultFontStyle}>Spooky Slam</h1>
+      <h1 css={defaultFontStyle} className="spooky-header-txt">Spooky Slam</h1>
       <div>
         <Carousel indicators={false} controls={false}>
           <Carousel.Item>
@@ -199,7 +199,10 @@ export const MainDashboard: FC = () => {
           </Button>
           <ButtonGroup>
             <Button size="lg" color="#FFA500" css={buttonStyles}>
-              <input type="file" onChange={handleAddFile} ref={fileRef} />
+              <label>
+                <input type="file" onChange={handleAddFile} />
+                Choose a Photo
+              </label>
             </Button>
 
             <Button
@@ -207,6 +210,7 @@ export const MainDashboard: FC = () => {
               color="#FFA500"
               css={buttonStyles}
               onClick={handleUpload}
+              className="upload-btn"
             >
               Upload Photos
             </Button>

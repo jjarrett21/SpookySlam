@@ -9,6 +9,8 @@ export const globalStyle = css`
     padding: 0;
     margin: 0;
     background: ${gradient("#9c9b98", " #ff8c00")};
+    background-repeat: none;
+    background-attachment: fixed;
   }
 
   html {
