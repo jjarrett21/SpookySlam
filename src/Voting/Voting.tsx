@@ -106,9 +106,7 @@ const modalStyle = css`
 
 export const Voting: FC = () => {
   const [contestants, setContestants] = useState<DocumentData[]>([]);
-  const [hasVoted, setHasVoted] = useState<boolean>(
-    lsGet("user_voted") === "false"
-  );
+  const [hasVoted, setHasVoted] = useState<boolean>(false);
   const [selectedContestant, setSelectedContestant] = useState("");
   const [selectedContestantId, setSelectedContestantId] = useState(null);
   const [open, setOpen] = useState(false);
@@ -154,6 +152,11 @@ export const Voting: FC = () => {
   }, []);
 
   useEffect(() => {
+    const voted = lsGet<boolean>("user_voted");
+    setHasVoted(voted);
+  }, []);
+
+  useEffect(() => {
     lsSet("user_voted", hasVoted.toString());
   }, [hasVoted]);
 
@@ -179,7 +182,7 @@ export const Voting: FC = () => {
         ))}
       </div>
 
-      <Modal css={modalStyle} show={open && lsGet("user_voted") === "false"}>
+      <Modal css={modalStyle} show={open && hasVoted === false}>
         <Modal.Header
           css={[defaultFontStyle, modalTxtStyles]}
           onHide={() => setOpen(false)}
