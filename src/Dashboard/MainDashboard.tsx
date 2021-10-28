@@ -59,7 +59,7 @@ const inputWrapperStyles = css`
 `;
 
 export const MainDashboard: FC = () => {
-  const [file, setFile] = useState<File | Blob>();
+  const [file, setFile] = useState<File>();
   const [url, setUrl] = useState("");
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [progress, setProgress] = useState(0);
@@ -68,36 +68,14 @@ export const MainDashboard: FC = () => {
 
   let tempUrl = "";
 
-  const handleAddFile = async (event: SyntheticEvent) => {
+  const handleAddFile = (event: SyntheticEvent) => {
     const input = event.target as HTMLInputElement;
 
     if (!input.files?.length) {
       return;
     }
 
-    console.log(input.files);
-    const uploadedFile = input.files[0];
-
-    // some hacky blob to url, to file logic
-    // https://stackoverflow.com/a/68222529
-
-    let blobURL = URL.createObjectURL(uploadedFile);
-    let blobRes = await fetch(blobURL);
-    let blob = await blobRes.blob();
-
-    let convertToPNG = await heic2any({
-      blob,
-      toType: "image/jpeg",
-      quality: 1,
-    });
-
-    const convertedFileName = uploadedFile.name.replace(".heic", ".jpeg");
-
-    const convertToBlob = new Blob([convertToPNG as BlobPart]);
-
-    const fileToupload = new File([convertToBlob], convertedFileName);
-
-    setFile(fileToupload);
+    setFile(input.files[0]);
   };
 
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -124,8 +102,31 @@ export const MainDashboard: FC = () => {
       return;
     }
 
+    let resultFile = file!;
+
+    if (maybeFile.name.toLowerCase().endsWith(".heic")) {
+      let fileUrl = URL.createObjectURL(maybeFile);
+
+      let blobRes = await fetch(fileUrl);
+
+      let blob = await blobRes.blob();
+
+      let conversionResult = await heic2any({
+        blob,
+        toType: "image/jpeg",
+        quality: 0.75,
+      });
+
+      let fileName = resultFile.name.replace(".HEIC", ".jpeg");
+
+      resultFile = new File([conversionResult as BlobPart], fileName, {
+        type: "image/jpeg",
+        lastModified: Date.now(),
+      });
+    }
+
     const storageRef = ref(storage, `/images/${contestantName}`);
-    const uploadTask = uploadBytesResumable(storageRef, file!);
+    const uploadTask = uploadBytesResumable(storageRef, resultFile);
     uploadTask.on(
       "state_changed",
       (snapshot) => {
@@ -152,7 +153,6 @@ export const MainDashboard: FC = () => {
       return;
     }
     handleFirestoreUpload();
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url]);
 
