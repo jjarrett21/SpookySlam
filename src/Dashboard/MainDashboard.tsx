@@ -102,7 +102,7 @@ export const MainDashboard: FC = () => {
       return;
     }
 
-    var resultFile = file!
+    let resultFile = file!;
 
     if (maybeFile.name.toLowerCase().endsWith(".heic")) {
       let fileUrl = URL.createObjectURL(maybeFile);
@@ -114,12 +114,15 @@ export const MainDashboard: FC = () => {
       let conversionResult = await heic2any({
         blob,
         toType: "image/jpeg",
-        quality: 0.75
+        quality: 0.75,
       });
 
       let fileName = resultFile.name.replace(".HEIC", ".jpeg");
 
-      resultFile = new File([conversionResult as BlobPart], fileName, {type: "image/jpeg", lastModified: Date.now()});
+      resultFile = new File([conversionResult as BlobPart], fileName, {
+        type: "image/jpeg",
+        lastModified: Date.now(),
+      });
     }
 
     const storageRef = ref(storage, `/images/${contestantName}`);
