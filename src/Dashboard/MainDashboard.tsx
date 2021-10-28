@@ -69,8 +69,6 @@ export const MainDashboard: FC = () => {
   const [file, setFile] = useState<File>();
   const [url, setUrl] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [progress, setProgress] = useState(0);
 
   const [contestantName, setContestantName] = useState("");
 
@@ -146,9 +144,7 @@ export const MainDashboard: FC = () => {
     uploadTask.on(
       "state_changed",
       (snapshot) => {
-        const nextProgress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        setProgress(nextProgress);
+        console.info(snapshot);
       },
       (error) => {
         console.error(error.message);
