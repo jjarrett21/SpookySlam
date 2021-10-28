@@ -1,6 +1,13 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/react";
-import { ChangeEvent, FC, SyntheticEvent, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  FC,
+  SyntheticEvent,
+  useEffect,
+  useState,
+  useRef,
+} from "react";
 import { Carousel, Button, ButtonGroup, FormLabel } from "react-bootstrap";
 import { storage, db } from "../firebase/fireabse";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
@@ -61,6 +68,7 @@ const inputWrapperStyles = css`
 export const MainDashboard: FC = () => {
   const [file, setFile] = useState<File>();
   const [url, setUrl] = useState("");
+  const fileRef = useRef<HTMLInputElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [progress, setProgress] = useState(0);
 
@@ -143,7 +151,7 @@ export const MainDashboard: FC = () => {
         });
         setUrl(tempUrl);
         setContestantName("");
-        setFile(undefined);
+        fileRef.current!.value = "";
       }
     );
   };
@@ -187,7 +195,7 @@ export const MainDashboard: FC = () => {
           </Button>
           <ButtonGroup>
             <Button size="lg" color="#FFA500" css={buttonStyles}>
-              <input type="file" onChange={handleAddFile} />
+              <input type="file" onChange={handleAddFile} ref={fileRef} />
             </Button>
 
             <Button
