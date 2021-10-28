@@ -157,6 +157,9 @@ export const Voting: FC = () => {
   }, []);
 
   useEffect(() => {
+    if (!hasVoted) {
+      return;
+    }
     lsSet("user_voted", hasVoted.toString());
   }, [hasVoted]);
 
