@@ -21,7 +21,7 @@ const cardStyles = (url: string) => css`
   position: relative;
   cursor: pointer;
   height: 500px;
-  width: 400px;
+  width: 20rem;
   border-radius: 3px;
   border: 2px solid black;
 
@@ -40,17 +40,20 @@ const cardStyles = (url: string) => css`
 `;
 
 const wrapperStyles = css`
-position: absolute;
+position: relative;
 top: 20%;
-margin-top: -50px;
-width: 40%;
+width: 100%;
 height: 60%;
+align-items: center;
+margin-left: auto;
+margin-right: auto;
+margin-top: 60px;
 ​`;
 
 const baseCardStyles = css`
   background-color: transparent;
   font-family: Spooky;
-  left: 500px;
+  align-items: center;
 `;
 
 const cardTextStyles = css`
@@ -164,8 +167,10 @@ export const Voting: FC = () => {
 
   return (
     <div>
-      <h1 css={defaultFontStyle}>Vote for your favorite</h1>
-      <h4 css={defaultFontStyle}>
+      <h1 className="vote-title" css={defaultFontStyle}>
+        Vote for your favorite
+      </h1>
+      <h4 className="vote-title" css={defaultFontStyle}>
         {hasVoted && "Thanks For Voting; We'll have results soon"}
       </h4>
       <div css={wrapperStyles}>

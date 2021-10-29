@@ -17,25 +17,38 @@ import { defaultFontStyle } from "../tokens/functions";
 import heic2any from "heic2any";
 
 const wrapperStyles = css`
-position: absolute;
-top: 20%;
-margin-top: -50px;
-width: 100vw;
-height: 100vh;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  margin-top: 50px;
+  width: 100%;
 ​`;
 
 const buttongGroupStyles = css`
   display: flex;
-  justify-content: space-evenly;
-  padding: 1rem;
+  flex-direction: column;
+  padding-top: 1rem;
+  padding-left: 3rem;
+  padding-right: 3rem;
+  width: 100%;
+  max-width: 500px;
+  margin: auto;
 `;
 
 const buttonStyles = css`
-  margin: 1rem;
+  /*display: flex;*/
+  /*flex-direction: column;*/
+  margin: 5px;
   background-color: #ff8c00;
   color: black;
   border: 3px solid black;
   font-family: Spooky;
+  width: 100%;
+  justify-content: center;
+  padding:10px;
+  margin-top: 1rem;
+  margin-left: auto;
+  
 
   &.btn-primary {
     &:active {
@@ -63,6 +76,8 @@ const inputWrapperStyles = css`
   display: flex;
   justify-content: center;
   font-family: Spooky;
+  padding-top: 15px;
+  margin-bottom: 20px;
 `;
 
 export const MainDashboard: FC = () => {
@@ -174,7 +189,9 @@ export const MainDashboard: FC = () => {
 
   return (
     <div css={wrapperStyles}>
-      <h1 css={defaultFontStyle}>Spooky Slam</h1>
+      <h1 css={defaultFontStyle} className="spooky-header-txt">
+        Spooky Slam
+      </h1>
       <div>
         <Carousel indicators={false} controls={false}>
           <Carousel.Item>
@@ -199,7 +216,10 @@ export const MainDashboard: FC = () => {
           </Button>
           <ButtonGroup>
             <Button size="lg" color="#FFA500" css={buttonStyles}>
-              <input type="file" onChange={handleAddFile} ref={fileRef} />
+              <label>
+                <input type="file" onChange={handleAddFile} />
+                Choose a Photo
+              </label>
             </Button>
 
             <Button
@@ -207,6 +227,7 @@ export const MainDashboard: FC = () => {
               color="#FFA500"
               css={buttonStyles}
               onClick={handleUpload}
+              className="upload-btn"
             >
               Upload Photos
             </Button>
