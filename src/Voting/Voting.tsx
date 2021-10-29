@@ -122,6 +122,8 @@ export const Voting: FC = () => {
   const docIds: string[] = [];
   const votingRef = doc(db, "contestants", `${selectedContestantId}`);
 
+  const canOpen = open && hasVoted === false;
+
   const fetchData = async () => {
     const q = query(collection(db, "contestants"), orderBy("name"));
 
@@ -200,11 +202,7 @@ export const Voting: FC = () => {
             ))}
           </div>
 
-          <Modal
-            css={modalStyle}
-            show={open && hasVoted === false}
-            animation={false}
-          >
+          <Modal css={modalStyle} show={canOpen} animation={false}>
             <Modal.Header
               css={[defaultFontStyle, modalTxtStyles]}
               onHide={() => setOpen(false)}
