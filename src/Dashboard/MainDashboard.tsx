@@ -169,7 +169,7 @@ export const MainDashboard: FC = () => {
   };
 
   useEffect(() => {
-    if (!url || !contestantName) {
+    if (url === "" || contestantName === "") {
       return;
     }
     handleFirestoreUpload();
