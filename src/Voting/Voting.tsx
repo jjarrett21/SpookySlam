@@ -100,7 +100,12 @@ const modalTxtStyles = css`
 `;
 
 const modalStyle = css`
+  position: fixed;
   color: #ffc800;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
   .modal-content {
     background-color: #000;
   }
@@ -189,7 +194,11 @@ export const Voting: FC = () => {
         ))}
       </div>
 
-      <Modal css={modalStyle} show={open && hasVoted === false}>
+      <Modal
+        css={modalStyle}
+        show={open && hasVoted === false}
+        animation={false}
+      >
         <Modal.Header
           css={[defaultFontStyle, modalTxtStyles]}
           onHide={() => setOpen(false)}
