@@ -122,7 +122,7 @@ export const Voting: FC = () => {
   const docIds: string[] = [];
   const votingRef = doc(db, "contestants", `${selectedContestantId}`);
 
-  const canOpen = open && hasVoted === false;
+  const canOpen = open;
 
   const fetchData = async () => {
     const q = query(collection(db, "contestants"), orderBy("name"));
@@ -141,6 +141,7 @@ export const Voting: FC = () => {
 
   const handleSelectedContestant =
     (nextContestant: DocumentData) => (e: SyntheticEvent) => {
+      e.preventDefault();
       setSelectedContestant(nextContestant.name);
       setSelectedContestantId(nextContestant.id);
       setOpen(true);
