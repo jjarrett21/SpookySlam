@@ -82,7 +82,7 @@ export const MainDashboard: FC = () => {
 
   let tempUrl = "";
 
-  const handleAddFile = (event: SyntheticEvent) => {
+  const handleAddFile = async (event: SyntheticEvent) => {
     const input = event.target as HTMLInputElement;
 
     if (!input.files?.length) {
@@ -172,6 +172,11 @@ export const MainDashboard: FC = () => {
     if (url === "" || contestantName === "") {
       return;
     }
+    handleUpload();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [url]);
+
+  useEffect(() => {
     handleFirestoreUpload();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url]);
@@ -210,12 +215,7 @@ export const MainDashboard: FC = () => {
           <ButtonGroup>
             <Button size="lg" color="#FFA500" css={buttonStyles}>
               <label>
-                <input
-                  type="file"
-                  onChange={handleAddFile}
-                  accept="image/*"
-                  capture
-                />
+                <input type="file" onChange={handleAddFile} accept="image/*" />
                 Choose a Photo
               </label>
             </Button>
