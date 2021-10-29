@@ -1,13 +1,6 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/react";
-import {
-  ChangeEvent,
-  FC,
-  SyntheticEvent,
-  useEffect,
-  useState,
-  useRef,
-} from "react";
+import { ChangeEvent, FC, SyntheticEvent, useEffect, useState } from "react";
 import { Carousel, Button, ButtonGroup, FormLabel } from "react-bootstrap";
 import { storage, db } from "../firebase/fireabse";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
