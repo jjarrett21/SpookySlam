@@ -133,11 +133,13 @@ export const MainDashboard: FC = () => {
 
       let fileName = resultFile.name.replace(".HEIC", ".jpeg");
 
-      return (resultFile = new File([conversionResult as BlobPart], fileName, {
+      resultFile = new File([conversionResult as BlobPart], fileName, {
         type: "image/jpeg",
         lastModified: Date.now(),
-      }));
+      });
     }
+
+    return resultFile;
   };
 
   const handleFileUpload = async () => {
