@@ -83,7 +83,7 @@ const inputWrapperStyles = css`
 export const MainDashboard: FC = () => {
   const [file, setFile] = useState<File>();
   const [url, setUrl] = useState("");
-  const fileRef = useRef<HTMLInputElement>(null);
+  // const fileRef = useRef<HTMLInputElement>(null);
 
   const [contestantName, setContestantName] = useState("");
 
