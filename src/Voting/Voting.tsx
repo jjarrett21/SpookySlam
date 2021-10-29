@@ -74,6 +74,11 @@ const buttonStyles = css`
   border: 3px solid black;
   font-family: Spooky;
 
+   &:disabled {
+      cursor: not-allowed !important;
+     
+    }
+
   &.btn-primary {
     &:active {
       background-color: #ff8c00;
@@ -91,7 +96,12 @@ const buttonStyles = css`
     }
 
     &:after {
-      background-color: ff8c00;
+      background-color: #ff8c00;
+    }
+
+    &:disabled {
+      cursor: not-allowed !important;
+      
     }
   }
 `;
@@ -122,6 +132,10 @@ export const Voting: FC = () => {
   const [hasVoted, setHasVoted] = useState<boolean>(false);
   const [selectedContestant, setSelectedContestant] = useState("");
   const [selectedContestantId, setSelectedContestantId] = useState(null);
+  const currentTime = new Date();
+  const whichHour = currentTime.getHours();
+  const resultsDisabled = whichHour >= 0;
+
   const [open, setOpen] = useState(false);
 
   const docData: DocumentData[] = [];
@@ -213,6 +227,7 @@ export const Voting: FC = () => {
               css={[buttonStyles, singleButtonStyles]}
               as={Link as any}
               to={"/results"}
+              disabled={!resultsDisabled}
             >
               View Results
             </Button>
