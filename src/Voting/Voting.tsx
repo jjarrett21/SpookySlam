@@ -15,6 +15,7 @@ import {
 import { defaultFontStyle } from "../tokens/functions";
 import { ButtonGroup, Card, Modal, Button } from "react-bootstrap";
 import { get as lsGet, set as lsSet } from "local-storage";
+import { Link } from "react-router-dom";
 
 const cardStyles = (url: string) => css`
   background-color: #ffffff;
@@ -111,6 +112,11 @@ const modalStyle = css`
   }
 `;
 
+const singleButtonStyles = css`
+  display: flex;
+  justify-content: center;
+`;
+
 export const Voting: FC = () => {
   const [contestants, setContestants] = useState<DocumentData[]>([]);
   const [hasVoted, setHasVoted] = useState<boolean>(false);
@@ -201,6 +207,15 @@ export const Voting: FC = () => {
                 </div>
               </Card>
             ))}
+            <Button
+              size="lg"
+              color="#FFA500"
+              css={[buttonStyles, singleButtonStyles]}
+              as={Link as any}
+              to={"/results"}
+            >
+              View Results
+            </Button>
           </div>
 
           <Modal css={modalStyle} show={canOpen} animation={false}>
