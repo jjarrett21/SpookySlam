@@ -172,53 +172,61 @@ export const Voting: FC = () => {
 
   return (
     <div>
-      <h1 className="vote-title" css={defaultFontStyle}>
-        Vote for your favorite
-      </h1>
-      <h4 className="vote-title" css={defaultFontStyle}>
-        {hasVoted && "Thanks For Voting; We'll have results soon"}
-      </h4>
-      <div css={wrapperStyles}>
-        {contestants?.map((c) => (
-          <Card
-            css={baseCardStyles}
-            onClick={handleSelectedContestant(c)}
-            key={c.id}
-          >
-            <div key={c.id}>
-              <Card.Text css={cardTextStyles}>Name: {c.name}</Card.Text>
-              <Card.Text>Votes: {c.votes}</Card.Text>
-              <Card.Img css={cardStyles(c.url)} />
-            </div>
-          </Card>
-        ))}
-      </div>
+      {!contestants.length ? (
+        <h1 className="vote-title" css={defaultFontStyle}>
+          No contestants yet.
+        </h1>
+      ) : (
+        <div>
+          <h1 className="vote-title" css={defaultFontStyle}>
+            Vote for your favorite
+          </h1>
+          <h4 className="vote-title" css={defaultFontStyle}>
+            {hasVoted && "Thanks For Voting; We'll have results soon"}
+          </h4>
+          <div css={wrapperStyles}>
+            {contestants?.map((c) => (
+              <Card
+                css={baseCardStyles}
+                onClick={handleSelectedContestant(c)}
+                key={c.id}
+              >
+                <div key={c.id}>
+                  <Card.Text css={cardTextStyles}>Name: {c.name}</Card.Text>
+                  <Card.Text>Votes: {c.votes}</Card.Text>
+                  <Card.Img css={cardStyles(c.url)} />
+                </div>
+              </Card>
+            ))}
+          </div>
 
-      <Modal
-        css={modalStyle}
-        show={open && hasVoted === false}
-        animation={false}
-      >
-        <Modal.Header
-          css={[defaultFontStyle, modalTxtStyles]}
-          onHide={() => setOpen(false)}
-        >
-          Submit Vote
-        </Modal.Header>
-        <Modal.Title css={[defaultFontStyle, modalTxtStyles]}>
-          {`Would you like to vote for ${selectedContestant} ? `}{" "}
-        </Modal.Title>
-        <Modal.Body>
-          <ButtonGroup css={buttongGroupStyles}>
-            <Button css={buttonStyles} onClick={handleVoteSubmit}>
+          <Modal
+            css={modalStyle}
+            show={open && hasVoted === false}
+            animation={false}
+          >
+            <Modal.Header
+              css={[defaultFontStyle, modalTxtStyles]}
+              onHide={() => setOpen(false)}
+            >
               Submit Vote
-            </Button>
-            <Button css={buttonStyles} onClick={() => setOpen(false)}>
-              Nah
-            </Button>
-          </ButtonGroup>
-        </Modal.Body>
-      </Modal>
+            </Modal.Header>
+            <Modal.Title css={[defaultFontStyle, modalTxtStyles]}>
+              {`Would you like to vote for ${selectedContestant} ? `}{" "}
+            </Modal.Title>
+            <Modal.Body>
+              <ButtonGroup css={buttongGroupStyles}>
+                <Button css={buttonStyles} onClick={handleVoteSubmit}>
+                  Submit Vote
+                </Button>
+                <Button css={buttonStyles} onClick={() => setOpen(false)}>
+                  Nah
+                </Button>
+              </ButtonGroup>
+            </Modal.Body>
+          </Modal>
+        </div>
+      )}
     </div>
   );
 };
