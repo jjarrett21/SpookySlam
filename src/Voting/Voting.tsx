@@ -54,7 +54,7 @@ margin-top: 60px;
 const baseCardStyles = css`
   background-color: transparent;
   font-family: Spooky;
-  align-items:center;
+  align-items: center;
 `;
 
 const cardTextStyles = css`
@@ -109,9 +109,7 @@ const modalStyle = css`
 
 export const Voting: FC = () => {
   const [contestants, setContestants] = useState<DocumentData[]>([]);
-  const [hasVoted, setHasVoted] = useState<boolean>(
-    lsGet("user_voted") === "false"
-  );
+  const [hasVoted, setHasVoted] = useState<boolean>(false);
   const [selectedContestant, setSelectedContestant] = useState("");
   const [selectedContestantId, setSelectedContestantId] = useState(null);
   const [open, setOpen] = useState(false);
@@ -157,13 +155,23 @@ export const Voting: FC = () => {
   }, []);
 
   useEffect(() => {
+    const voted = lsGet<boolean>("user_voted");
+    setHasVoted(voted);
+  }, []);
+
+  useEffect(() => {
+    if (!hasVoted) {
+      return;
+    }
     lsSet("user_voted", hasVoted.toString());
   }, [hasVoted]);
 
   return (
     <div>
-      <h1 className="vote-title"css={defaultFontStyle}>Vote for your favorite</h1>
-      <h4 className="vote-title"css={defaultFontStyle}>
+      <h1 className="vote-title" css={defaultFontStyle}>
+        Vote for your favorite
+      </h1>
+      <h4 className="vote-title" css={defaultFontStyle}>
         {hasVoted && "Thanks For Voting; We'll have results soon"}
       </h4>
       <div css={wrapperStyles}>

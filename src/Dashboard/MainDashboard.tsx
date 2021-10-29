@@ -1,6 +1,13 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/react";
-import { ChangeEvent, FC, SyntheticEvent, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  FC,
+  SyntheticEvent,
+  useEffect,
+  useState,
+  useRef,
+} from "react";
 import { Carousel, Button, ButtonGroup, FormLabel } from "react-bootstrap";
 import { storage, db } from "../firebase/fireabse";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
@@ -18,14 +25,14 @@ const wrapperStyles = css`
 ​`;
 
 const buttongGroupStyles = css`
-  display:flex;
+  display: flex;
   flex-direction: column;
   padding-top: 1rem;
-  padding-left:3rem;
-  padding-right:3rem;
+  padding-left: 3rem;
+  padding-right: 3rem;
   width: 100%;
   max-width: 500px;
-  margin:auto;
+  margin: auto;
 `;
 
 const buttonStyles = css`
@@ -76,8 +83,7 @@ const inputWrapperStyles = css`
 export const MainDashboard: FC = () => {
   const [file, setFile] = useState<File>();
   const [url, setUrl] = useState("");
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [progress, setProgress] = useState(0);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const [contestantName, setContestantName] = useState("");
 
@@ -110,14 +116,14 @@ export const MainDashboard: FC = () => {
     }
   };
 
-  const handleFileUpload = async () => {
+  const handleConvertFile = async () => {
     let maybeFile = file;
 
     if (!maybeFile) {
       return;
     }
 
-    var resultFile = file!
+    let resultFile = file!;
 
     if (maybeFile.name.toLowerCase().endsWith(".heic")) {
       let fileUrl = URL.createObjectURL(maybeFile);
@@ -129,22 +135,31 @@ export const MainDashboard: FC = () => {
       let conversionResult = await heic2any({
         blob,
         toType: "image/jpeg",
-        quality: 0.75
+        quality: 0.75,
       });
 
       let fileName = resultFile.name.replace(".HEIC", ".jpeg");
 
-      resultFile = new File([conversionResult as BlobPart], fileName, {type: "image/jpeg", lastModified: Date.now()});
+      return (resultFile = new File([conversionResult as BlobPart], fileName, {
+        type: "image/jpeg",
+        lastModified: Date.now(),
+      }));
+    }
+  };
+
+  const handleFileUpload = async () => {
+    const convertedFile = await handleConvertFile();
+
+    if (!convertedFile) {
+      return;
     }
 
     const storageRef = ref(storage, `/images/${contestantName}`);
-    const uploadTask = uploadBytesResumable(storageRef, resultFile);
+    const uploadTask = uploadBytesResumable(storageRef, convertedFile);
     uploadTask.on(
       "state_changed",
       (snapshot) => {
-        const nextProgress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        setProgress(nextProgress);
+        console.info(snapshot);
       },
       (error) => {
         console.error(error.message);
@@ -155,7 +170,7 @@ export const MainDashboard: FC = () => {
         });
         setUrl(tempUrl);
         setContestantName("");
-        setFile(undefined);
+        fileRef.current!.value = "";
       }
     );
   };
@@ -174,7 +189,9 @@ export const MainDashboard: FC = () => {
 
   return (
     <div css={wrapperStyles}>
-      <h1 css={defaultFontStyle} className="spooky-header-txt">Spooky Slam</h1>
+      <h1 css={defaultFontStyle} className="spooky-header-txt">
+        Spooky Slam
+      </h1>
       <div>
         <Carousel indicators={false} controls={false}>
           <Carousel.Item>
