@@ -210,7 +210,12 @@ export const MainDashboard: FC = () => {
           <ButtonGroup>
             <Button size="lg" color="#FFA500" css={buttonStyles}>
               <label>
-                <input type="file" onChange={handleAddFile} />
+                <input
+                  type="file"
+                  onChange={handleAddFile}
+                  accept="image/*"
+                  capture
+                />
                 Choose a Photo
               </label>
             </Button>
@@ -234,7 +239,6 @@ export const MainDashboard: FC = () => {
           name="input"
           onChange={handleNameChange}
           value={contestantName}
-          accept="image/*;capture=camera"
         />
       </div>
     </div>
