@@ -133,8 +133,9 @@ export const Voting: FC = () => {
   const [selectedContestant, setSelectedContestant] = useState("");
   const [selectedContestantId, setSelectedContestantId] = useState(null);
   const currentTime = new Date();
-  const whichHour = currentTime.getHours();
-  const resultsDisabled = whichHour >= 0;
+  const whichHour = currentTime.getTime();
+
+  const resultsDisabled = whichHour === 1635699600000;
 
   const [open, setOpen] = useState(false);
 

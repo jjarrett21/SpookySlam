@@ -82,7 +82,7 @@ export const MainDashboard: FC = () => {
 
   let tempUrl = "";
 
-  const handleAddFile = async (event: SyntheticEvent) => {
+  const handleAddFile = (event: SyntheticEvent) => {
     const input = event.target as HTMLInputElement;
 
     if (!input.files?.length) {
@@ -172,11 +172,6 @@ export const MainDashboard: FC = () => {
     if (url === "" || contestantName === "") {
       return;
     }
-    handleUpload();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [url]);
-
-  useEffect(() => {
     handleFirestoreUpload();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url]);
