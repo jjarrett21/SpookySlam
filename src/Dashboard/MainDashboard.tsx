@@ -67,7 +67,7 @@ const buttonStyles = css`
     }
 
     &:after {
-      background-color: ff8c00;
+      background-color: #ff8c00;
     }
   }
 `;
@@ -170,7 +170,7 @@ export const MainDashboard: FC = () => {
         });
         setUrl(tempUrl);
         setContestantName("");
-        fileRef.current!.value = "";
+        // fileRef.current!.value = "";
       }
     );
   };
