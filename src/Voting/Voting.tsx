@@ -87,6 +87,7 @@ const buttonStyles = css`
 
     &:hover {
       background-color: #ff8c00;
+      border: 3px solid white;
       opacity: 0.5;
   
 
