@@ -236,7 +236,13 @@ export const MainDashboard: FC = () => {
       </div>
       <div css={inputWrapperStyles}>
         <FormLabel css={inputWrapperStyles}>Contestant Name: </FormLabel>
-        <input type="text" onChange={handleNameChange} value={contestantName} />
+        <input
+          type="text"
+          name="input"
+          onChange={handleNameChange}
+          value={contestantName}
+          accept="image/*;capture=camera"
+        />
       </div>
     </div>
   );
