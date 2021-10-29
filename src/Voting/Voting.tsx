@@ -122,7 +122,7 @@ export const Voting: FC = () => {
   const docIds: string[] = [];
   const votingRef = doc(db, "contestants", `${selectedContestantId}`);
 
-  const canOpen = open;
+  const canOpen = open && !hasVoted;
 
   const fetchData = async () => {
     const q = query(collection(db, "contestants"), orderBy("name"));
