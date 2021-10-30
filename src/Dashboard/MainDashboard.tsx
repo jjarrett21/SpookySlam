@@ -232,9 +232,7 @@ export const MainDashboard: FC = () => {
         <Modal.Header
           css={[defaultFontStyle, modalTxtStyles]}
           onHide={() => setOpen(false)}
-        >
-          Add New Contestant
-        </Modal.Header>
+        />
         <Modal.Title css={[defaultFontStyle, modalTxtStyles]}>
           Add New Contestant
         </Modal.Title>
@@ -261,7 +259,7 @@ export const MainDashboard: FC = () => {
             </Button>
 
             <Button css={buttonStyles} onClick={handleUpload}>
-              Upload
+              Submit
             </Button>
             <Button css={buttonStyles} onClick={() => setOpen(false)}>
               Cancel
