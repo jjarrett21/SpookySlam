@@ -1,7 +1,13 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/react";
 import { ChangeEvent, FC, SyntheticEvent, useEffect, useState } from "react";
-import { Carousel, Button, ButtonGroup, FormLabel } from "react-bootstrap";
+import {
+  Carousel,
+  Button,
+  ButtonGroup,
+  FormLabel,
+  Modal,
+} from "react-bootstrap";
 import { storage, db } from "../firebase/fireabse";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { collection, addDoc } from "firebase/firestore";
@@ -74,9 +80,26 @@ const inputWrapperStyles = css`
   margin-bottom: 20px;
 `;
 
+const modalTxtStyles = css`
+  text-align: center;
+`;
+
+const modalStyle = css`
+  position: fixed;
+  color: #ffc800;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  .modal-content {
+    background-color: #000;
+  }
+`;
+
 export const MainDashboard: FC = () => {
   const [file, setFile] = useState<File>();
   const [url, setUrl] = useState("");
+  const [open, setOpen] = useState(false);
   // const fileRef = useRef<HTMLInputElement>(null);
 
   const [contestantName, setContestantName] = useState("");
@@ -155,7 +178,9 @@ export const MainDashboard: FC = () => {
     uploadTask.on(
       "state_changed",
       (snapshot) => {
-        console.info(snapshot);
+        if (snapshot.bytesTransferred === snapshot.totalBytes) {
+          setOpen(false);
+        }
       },
       (error) => {
         console.error(error.message);
@@ -183,6 +208,10 @@ export const MainDashboard: FC = () => {
     await handleFileUpload();
   };
 
+  const handleOpenModal = () => {
+    setOpen(true);
+  };
+
   return (
     <div css={wrapperStyles}>
       <h1 css={defaultFontStyle} className="spooky-header-txt">
@@ -199,8 +228,59 @@ export const MainDashboard: FC = () => {
           </Carousel.Item>
         </Carousel>
       </div>
+      <Modal css={modalStyle} show={open} animation={false}>
+        <Modal.Header
+          css={[defaultFontStyle, modalTxtStyles]}
+          onHide={() => setOpen(false)}
+        >
+          Add New Contestant
+        </Modal.Header>
+        <Modal.Title css={[defaultFontStyle, modalTxtStyles]}>
+          Add New Contestant
+        </Modal.Title>
+        <Modal.Body>
+          <div css={inputWrapperStyles}>
+            <FormLabel css={inputWrapperStyles}>Contestant Name: </FormLabel>
+            <input
+              type="text"
+              name="input"
+              onChange={handleNameChange}
+              value={contestantName}
+            />
+          </div>
+          <ButtonGroup css={buttongGroupStyles}>
+            <Button size="lg" color="#FFA500" css={buttonStyles}>
+              <label>
+                <input
+                  type="file"
+                  onChange={handleAddFile}
+                  accept=".png, .jpg, .jpeg, .HEIC, .heic"
+                />
+                Choose a Photo
+              </label>
+            </Button>
+
+            <Button css={buttonStyles} onClick={handleUpload}>
+              Upload
+            </Button>
+            <Button css={buttonStyles} onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
+          </ButtonGroup>
+        </Modal.Body>
+      </Modal>
+
       <div css={buttongGroupStyles}>
         <ButtonGroup vertical>
+          <Button
+            size="lg"
+            color="#FFA500"
+            css={buttonStyles}
+            onClick={handleOpenModal}
+            className="upload-btn"
+          >
+            Add Contestant
+          </Button>
           <Button
             size="lg"
             color="#FFA500"
@@ -210,34 +290,7 @@ export const MainDashboard: FC = () => {
           >
             Vote
           </Button>
-          <ButtonGroup>
-            <Button size="lg" color="#FFA500" css={buttonStyles}>
-              <label>
-                <input type="file" onChange={handleAddFile} accept="image/*" />
-                Choose a Photo
-              </label>
-            </Button>
-
-            <Button
-              size="lg"
-              color="#FFA500"
-              css={buttonStyles}
-              onClick={handleUpload}
-              className="upload-btn"
-            >
-              Upload Photos
-            </Button>
-          </ButtonGroup>
         </ButtonGroup>
-      </div>
-      <div css={inputWrapperStyles}>
-        <FormLabel css={inputWrapperStyles}>Contestant Name: </FormLabel>
-        <input
-          type="text"
-          name="input"
-          onChange={handleNameChange}
-          value={contestantName}
-        />
       </div>
     </div>
   );
