@@ -133,10 +133,6 @@ export const Voting: FC = () => {
   const [hasVoted, setHasVoted] = useState<boolean>(false);
   const [selectedContestant, setSelectedContestant] = useState("");
   const [selectedContestantId, setSelectedContestantId] = useState(null);
-  const currentTime = new Date();
-  const whichHour = currentTime.getTime();
-
-  const resultsDisabled = whichHour === 1635699600000;
 
   const [open, setOpen] = useState(false);
 
@@ -229,7 +225,6 @@ export const Voting: FC = () => {
               css={[buttonStyles, singleButtonStyles]}
               as={Link as any}
               to={"/results"}
-              disabled={!resultsDisabled}
             >
               View Results
             </Button>
